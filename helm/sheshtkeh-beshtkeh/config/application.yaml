@@ -1,0 +1,29 @@
+# Ordinary Spring configuration. Edit before packaging; ConfigMap checksum rolls pods.
+# Password comes only from the referenced Secret via SHESHTKEH_ADMIN_PASSWORD.
+server:
+  shutdown: graceful
+  servlet:
+    session:
+      cookie:
+        secure: true
+  forward-headers-strategy: native
+  tomcat:
+    remoteip:
+      # Trust only proxy networks controlled by your cluster; narrow for your router.
+      internal-proxies: '10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}|127\.0\.0\.1|::1'
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+identity:
+  database: /data/identity/guests.sqlite
+sheshtkeh:
+  admin:
+    enabled: true
+    username: admin
+    session-timeout: 2h
+  analytics:
+    release: 0.1.0-beta
+    storage:
+      path: /data/analytics
+      retention: 60d
+      max-total-size: 512MB

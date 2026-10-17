@@ -1,0 +1,18 @@
+# Replace the example registry and namespace-local Secret names before use.
+image:
+  registry: artifactory.example.com
+  repository: docker-local/sheshtkeh-beshtkeh
+  tag: "0.1.0-beta"
+  pullPolicy: Always
+imagePullSecrets:
+  - name: artifactory-pull
+route:
+  enabled: true
+  host: "" # Let OpenShift assign a hostname, or supply your approved DNS name.
+admin:
+  existingSecret: sheshtkeh-admin
+  passwordKey: password
+persistence:
+  enabled: true
+  size: 2Gi
+  storageClass: null

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: sheshtkeh-beshtkeh
+description: Single-process Sheshtkeh Beshtkeh with file analytics
+version: 0.1.0-beta.1
+appVersion: "0.1.0-beta"
+type: application

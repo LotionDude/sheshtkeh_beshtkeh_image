@@ -1,0 +1,36 @@
+services:
+  sheshtkeh-beshtkeh:
+    image: ${SHESHTKEH_IMAGE:-sheshtkeh-beshtkeh:0.1.0-beta}
+    restart: unless-stopped
+    stop_grace_period: 45s
+    ports:
+      - "${SHESHTKEH_BIND_ADDRESS:-127.0.0.1}:${SHESHTKEH_PORT:-8094}:8080"
+    # .env is optional and supplies Compose interpolation; no credentials have defaults.
+    environment:
+      SERVER_PORT: "8080"
+      SERVER_SERVLET_SESSION_COOKIE_SECURE: ${SHESHTKEH_SECURE_COOKIES:-false}
+      # Localhost-bound HTTP only; turn off behind a trusted HTTPS proxy.
+      SHESHTKEH_SECURITY_ALLOW_INSECURE_HTTP: ${SHESHTKEH_ALLOW_INSECURE_HTTP:-true}
+      SHESHTKEH_ADMIN_PASSWORD: ${SHESHTKEH_ADMIN_PASSWORD:-}
+      SHESHTKEH_ADMIN_USERNAME: ${SHESHTKEH_ADMIN_USERNAME:-admin}
+      SHESHTKEH_ANALYTICS_RELEASE: ${SHESHTKEH_RELEASE:-0.1.0-beta}
+      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS:--XX:MaxRAMPercentage=65}
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs:
+      # SQLite JDBC loads its bundled native library from java.io.tmpdir.
+      - /tmp:rw,exec,nosuid,size=256m,mode=1777
+    volumes:
+      - data:/data
+    mem_limit: 1g
+    cpus: 2
+    healthcheck:
+      test: [CMD, curl, --fail, --silent, http://127.0.0.1:8080/actuator/health/readiness]
+      interval: 15s
+      timeout: 5s
+      start_period: 60s
+      retries: 3
+
+volumes:
+  data:
